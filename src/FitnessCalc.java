@@ -4,8 +4,7 @@ public class FitnessCalc {
 
   FitnessCalc() {}
 
-  public static int calculateFitness(Individual individual) {
-    Board board = individual.getBoard();
+  public static int calculateFitness(Board board) {
     int[][] boardArr = board.getBoard();
 
     int totalRowFitness = getTotalRowFiteness(boardArr);
