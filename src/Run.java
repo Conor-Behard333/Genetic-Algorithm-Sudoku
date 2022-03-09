@@ -14,18 +14,14 @@ class Run {
   };
     // Creates a population with random candidate solutions
     // Also evaluates each candidate
-    Population pop = new Population(1000, startingBoard);
+    Population pop = new Population(1000, startingBoard, 0.5, 50);
     // pop.displayPopulation();
     while (true) {
       // SELECT parents
       pop.selectParents();
-      // CROSSOVER pairs of parents
+      // CROSSOVER pairs of parents AND Mutate
       pop.crossover(2);
-      // MUTATE the resulting offspring
-      pop.displayBest();
-      pop.mutate();
-      // EVALUATE new candidates
-      // SELECT individuals for the next generation
+      System.out.println(pop.getBestScore());
       // break;
     }
   }

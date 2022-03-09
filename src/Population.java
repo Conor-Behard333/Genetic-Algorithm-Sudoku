@@ -7,8 +7,13 @@ public class Population {
     private int[][] startingBoard;
     private ArrayList<Individual> parents = new ArrayList<>();
 
-    Population(int size, int[][] startingBoard) {
+    private final double KILL_PERCENTAGE;
+    private final int MUTATION_PROB;
+
+    Population(int size, int[][] startingBoard, double killPercentage, int mutateProb) {
         this.startingBoard = startingBoard;
+        KILL_PERCENTAGE = killPercentage;
+        MUTATION_PROB = mutateProb;
         individuals = new Individual[size];
         for (int i = 0; i < individuals.length; i++) {
             individuals[i] = new Individual(startingBoard, false);
@@ -39,7 +44,7 @@ public class Population {
      * This is Rank Selection
      */
     public void selectParents() {
-        int parentsNeeded = kill(0.3); // Kill 60 percent of the population returns the number of individuals killed
+        int parentsNeeded = kill(KILL_PERCENTAGE); // Kill 60 percent of the population returns the number of individuals killed
 
         //currently picks best parents
         for (int i = 0; i < parentsNeeded; i++) {
@@ -74,6 +79,9 @@ public class Population {
 
             int[] child1Gene = getChildGenes(child1, crossoverPoints, p1Gene, p2Gene, true);
             int[] child2Gene = getChildGenes(child2, crossoverPoints, p1Gene, p2Gene, false);
+
+            mutate(child1Gene, MUTATION_PROB);
+            mutate(child1Gene, MUTATION_PROB);
 
             setChildGenes(child1, child1Gene);
             setChildGenes(child2, child2Gene);
@@ -163,21 +171,37 @@ public class Population {
         return -1;
     }
 
-    public void mutate() {
+    /**
+     * Random Resetting:             
+     */
+    public void mutate(int[] childGenes, int mutationProb) {
+        Random rand = new Random();
+        if (rand.nextInt(99) + 1 < mutationProb) {
+            int randNumOfMutations = rand.nextInt((9 - 1) + 1) + 1;
+            for (int i = 0; i < randNumOfMutations; i++) {
+                int randPos = rand.nextInt(childGenes.length);
+                int randNum = rand.nextInt((9 - 1) + 1) + 1;
+                childGenes[randPos] = randNum;
+            }
+        }
     }
     
-    private int getFitnessSum() {
-        int sum = 0;
-        for (int i = 0; i < individuals.length; i++) {
-            if (individuals[i] == null) {
-                break;
-            }
-            sum += individuals[i].getFitnessScore();
-        }
-        return sum;
-    }
+    // private int getFitnessSum() {
+    //     int sum = 0;
+    //     for (int i = 0; i < individuals.length; i++) {
+    //         if (individuals[i] == null) {
+    //             break;
+    //         }
+    //         sum += individuals[i].getFitnessScore();
+    //     }
+    //     return sum;
+    // }
 
     public void displayBest() {
         System.out.println(individuals[0]);
+    }
+
+    public int getBestScore() {
+        return individuals[0].getFitnessScore();
     }
 }
