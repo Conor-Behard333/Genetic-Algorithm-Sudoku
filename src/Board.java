@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -14,6 +15,8 @@ public class Board {
     {3, 4, 7, 2, 8, 3, 8, 7, 9}
   };
 
+  private ArrayList<int[]> allowedToChange = new ArrayList<>();
+
   private int[][] board = {
     { 5, 3, 0, 0, 7, 0, 0, 0, 0 },
     { 6, 0, 0, 1, 9, 5, 0, 0, 0 },
@@ -27,6 +30,15 @@ public class Board {
   };
 
   Board() {
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board[i].length; j++) {
+        if (board[i][j] == 0) {
+          allowedToChange.add(new int[] { i, j });
+        }
+      }
+    }
+    
+
     Random rand = new Random();
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board[i].length; j++) {
@@ -58,5 +70,9 @@ public class Board {
       result.append(Arrays.toString(testBoard[i]) + "\n");
     }
     return result.toString();
+  }
+
+  public boolean isAllowedToChane(int row, int col) {
+    return allowedToChange.contains(new int[] { row, col });
   }
 }
