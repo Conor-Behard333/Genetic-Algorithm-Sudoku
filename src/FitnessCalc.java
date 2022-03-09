@@ -6,9 +6,8 @@ public class FitnessCalc {
 
   public static int calculateFitness(Individual individual) {
     Board board = individual.getBoard();
-    int[][] boardArr = board.getTestBoard();
+    int[][] boardArr = board.getBoard();
 
-    System.out.println(board);
     int totalRowFitness = getTotalRowFiteness(boardArr);
     int totalColFitness = getTotalColumnFiteness(boardArr);
     int totalGridFitness = getTotalGridFitness(boardArr);
@@ -48,7 +47,6 @@ public class FitnessCalc {
         rowCount.put(board[row][col], rowCount.get(board[row][col]) + 1);
       }
     }
-
     return getCount(rowCount);
   }
 
@@ -99,8 +97,6 @@ public class FitnessCalc {
         }
       }
     }
-    System.out.println(getCount(gridCount));
-    System.out.println(gridCount);
     return getCount(gridCount);
   }
 
