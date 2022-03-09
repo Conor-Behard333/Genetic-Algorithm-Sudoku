@@ -44,7 +44,7 @@ public class Population {
      * This is Rank Selection
      */
     public void selectParents() {
-        int parentsNeeded = kill(KILL_PERCENTAGE); // Kill 60 percent of the population returns the number of individuals killed
+        int parentsNeeded = kill(KILL_PERCENTAGE); // Kill x percent of the population returns the number of individuals killed
 
         //currently picks best parents
         for (int i = 0; i < parentsNeeded; i++) {
@@ -68,10 +68,12 @@ public class Population {
      * https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
      */
     public void crossover(int k) {
-
-        for (int i = 0; i < parents.size(); i += 2) {
-            int[] p1Gene = parents.get(i).getBoard().getGene();
-            int[] p2Gene = parents.get(i + 1).getBoard().getGene();
+        Random rand = new Random();
+        while (getNullIndex() != -1) {
+            int index1 = rand.nextInt(parents.size());
+            int index2 = rand.nextInt(parents.size());
+            int[] p1Gene = parents.get(index1).getBoard().getGene();
+            int[] p2Gene = parents.get(index2).getBoard().getGene();
             int[] crossoverPoints = getCrossoverPoints(k, p1Gene.length);
 
             Individual child1 = new Individual(startingBoard, true);
