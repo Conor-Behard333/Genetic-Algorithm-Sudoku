@@ -63,7 +63,7 @@ public class Population {
      * https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
      */
     public void crossover(int k) {
-        
+
         for (int i = 0; i < parents.size(); i += 2) {
             int[] p1Gene = parents.get(i).getBoard().getGene();
             int[] p2Gene = parents.get(i + 1).getBoard().getGene();
@@ -72,16 +72,49 @@ public class Population {
             Individual child1 = new Individual(startingBoard, true);
             Individual child2 = new Individual(startingBoard, true);
 
-            int[] child1Gene = getChildGenes(child1, crossoverPoints, p1Gene, p2Gene);
-            // int[] child2Gene = getChildGenes(child2, crossoverPoints, p1Gene, p2Gene);
+            int[] child1Gene = getChildGenes(child1, crossoverPoints, p1Gene, p2Gene, true);
+            int[] child2Gene = getChildGenes(child2, crossoverPoints, p1Gene, p2Gene, false);
 
             setChildGenes(child1, child1Gene);
-            // setChildGenes(child2, child2Gene);
-            
+            setChildGenes(child2, child2Gene);
+
             addChildToPop(child1);
-            // addChildToPop(child2);   
+            addChildToPop(child2);
         }
         sortIndividuals();
+    }
+    
+    private int[] getChildGenes(Individual child, int[] crossoverPoint, int[] p1Gene, int[] p2Gene, boolean p1) {
+        int[] childGene = child.getBoard().getGene();
+        for (int i = 0; i < crossoverPoint.length; i++) {
+            if (i == 0) {
+                for (int j = 0; j < crossoverPoint[i] + 1; j++) {
+                    if (p1) {
+                        childGene[j] = p1Gene[j];
+                    } else {
+                        childGene[j] = p2Gene[j];
+                    }
+                }
+                p1 = !p1;
+            } else {
+                for (int j = crossoverPoint[i - 1]; j < crossoverPoint[i]; j++) {
+                    if (p1) {
+                        childGene[j] = p2Gene[j];                        
+                    } else {
+                        childGene[j] = p1Gene[j];
+                    }
+                }
+            }
+            p1 = !p1;
+        }
+        for (int i = crossoverPoint[crossoverPoint.length - 1]; i < childGene.length; i++) {
+            if (!p1) {
+                childGene[i] = p1Gene[i];
+            } else {
+                childGene[i] = p2Gene[i];
+            }
+        }
+        return childGene;
     }
 
     private int[] getCrossoverPoints(int k, int geneLength) {
@@ -108,36 +141,6 @@ public class Population {
         return false;
     }
 
-    private int[] getChildGenes(Individual child, int[] crossoverPoint, int[] p1Gene, int[] p2Gene) {
-        boolean p1 = true;
-        int[] childGene = child.getBoard().getGene();
-        for (int i = 0; i < crossoverPoint.length; i++) {
-            if (i == 0) {
-                for (int j = 0; j < crossoverPoint[i] + 1; j++) {
-                    childGene[j] = p1Gene[j];
-                    p1 = false;
-                }
-            } else {
-                for (int j = crossoverPoint[i - 1]; j < crossoverPoint[i]; j++) {
-                    if (p1) {
-                        childGene[j] = p2Gene[j];                        
-                    } else {
-                        childGene[j] = p1Gene[j];
-                    }
-                }
-            }
-            p1 = !p1;
-        }
-        p1 = !p1;
-        for (int i = crossoverPoint[crossoverPoint.length - 1]; i < childGene.length; i++) {
-            if (p1) {
-                childGene[i] = p1Gene[i];
-            } else {
-                childGene[i] = p2Gene[i];
-            }
-        }
-        return childGene;
-    }
     
     private void addChildToPop(Individual child) {
         int nullIndex = getNullIndex();

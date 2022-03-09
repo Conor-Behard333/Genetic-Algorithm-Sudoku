@@ -14,7 +14,7 @@ class Run {
   };
     // Creates a population with random candidate solutions
     // Also evaluates each candidate
-    Population pop = new Population(10000, startingBoard);
+    Population pop = new Population(1000, startingBoard);
     // pop.displayPopulation();
     while (true) {
       // SELECT parents
@@ -26,7 +26,7 @@ class Run {
       pop.mutate();
       // EVALUATE new candidates
       // SELECT individuals for the next generation
-      break;
+      // break;
     }
   }
 }
