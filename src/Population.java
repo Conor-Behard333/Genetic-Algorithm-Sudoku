@@ -9,6 +9,7 @@ public class Population {
 
     private final double KILL_PERCENTAGE;
     private final int MUTATION_PROB;
+    private final double OFFSET_PERCENTAGE = 0.1;
 
     Population(int size, int[][] startingBoard, double killPercentage, int mutateProb) {
         this.startingBoard = startingBoard;
@@ -35,7 +36,7 @@ public class Population {
      * Selection techniques:
      * - Roulette Wheel Selection
      * - Rank Selection
-     * - Steadt State Selection 
+     * - Steady State Selection 
      * - Tournament Selection
      * - Elitism Selection
      * - Boltzmann Selection
@@ -45,7 +46,7 @@ public class Population {
      */
     public void selectParents() {
         // Kill x percent of the population returns the number of individuals killed
-        int parentsNeeded = kill(KILL_PERCENTAGE); 
+        int parentsNeeded = kill(); 
 
         // currently picks best parents
         for (int i = 0; i < parentsNeeded; i++) {
@@ -55,10 +56,11 @@ public class Population {
         }
     }
 
-    private int kill(double percentage) {
+    private int kill() {
         int popSize = individuals.length;
-        int remove = (int) (popSize * ((double) percentage));
-        for (int i = individuals.length - 1; i >= individuals.length - remove; i--) {
+        int offset = (int) (popSize * ((double) OFFSET_PERCENTAGE));
+        int remove = (int) (popSize * ((double) KILL_PERCENTAGE));
+        for (int i = individuals.length - 1 -offset; i >= individuals.length - remove; i--) {
             individuals[i] = null;
         }
         return remove;

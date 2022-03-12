@@ -38,7 +38,7 @@ class Run {
     };
 
     //solve starting board 1 (10000, 0.85, 20, 7)
-    run(100, startingBoard1, 0.25, 20, 7); //solves starting board 1
+    run(10000, startingBoard1, 0.85, 20, 7); //solves starting board 1
 
     // for (int i = 0; i < 5; i++) {
     //   run(10, startingBoard, 0.85, 100, 7);
