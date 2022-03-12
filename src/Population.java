@@ -180,7 +180,8 @@ public class Population {
     private void mutate(int[] childGenes, int mutationProb) {
         Random rand = new Random();
         if (rand.nextInt(99) + 1 < mutationProb) {
-            int randNumOfMutations = rand.nextInt((9 - 1) + 1) + 1;
+            int randNumOfMutations = 30;
+            // int randNumOfMutations = rand.nextInt((40 - 1) + 1) + 10;
             for (int i = 0; i < randNumOfMutations; i++) {
                 int randPos = rand.nextInt(childGenes.length);
                 int randNum = rand.nextInt((9 - 1) + 1) + 1;
