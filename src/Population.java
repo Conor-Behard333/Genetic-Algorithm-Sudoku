@@ -44,9 +44,10 @@ public class Population {
      * This is Rank Selection
      */
     public void selectParents() {
-        int parentsNeeded = kill(KILL_PERCENTAGE); // Kill x percent of the population returns the number of individuals killed
+        // Kill x percent of the population returns the number of individuals killed
+        int parentsNeeded = kill(KILL_PERCENTAGE); 
 
-        //currently picks best parents
+        // currently picks best parents
         for (int i = 0; i < parentsNeeded; i++) {
             if (individuals[i] != null) {
                 parents.add(individuals[i]);                
@@ -176,7 +177,7 @@ public class Population {
     /**
      * Random Resetting:             
      */
-    public void mutate(int[] childGenes, int mutationProb) {
+    private void mutate(int[] childGenes, int mutationProb) {
         Random rand = new Random();
         if (rand.nextInt(99) + 1 < mutationProb) {
             int randNumOfMutations = rand.nextInt((9 - 1) + 1) + 1;
@@ -187,17 +188,6 @@ public class Population {
             }
         }
     }
-    
-    // private int getFitnessSum() {
-    //     int sum = 0;
-    //     for (int i = 0; i < individuals.length; i++) {
-    //         if (individuals[i] == null) {
-    //             break;
-    //         }
-    //         sum += individuals[i].getFitnessScore();
-    //     }
-    //     return sum;
-    // }
 
     public void displayBest() {
         System.out.println(individuals[0]);
