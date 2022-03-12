@@ -38,7 +38,7 @@ class Run {
     };
 
     //solve starting board 1 (10000, 0.85, 20, 7)
-    run(1000, startingBoard1, 0.85, 80, 7); //solves starting board 1
+    run(100, startingBoard1, 0.25, 20, 7); //solves starting board 1
 
     // for (int i = 0; i < 5; i++) {
     //   run(10, startingBoard, 0.85, 100, 7);
@@ -67,7 +67,7 @@ class Run {
       // CROSSOVER pairs of parents AND Mutate
       pop.crossover(numberOfCrossovers);
       if (bestScore != pop.getBestScore()) {
-        System.out.println(pop.getBestScore());
+        System.out.println("GEN: " + generation +" Best Score: " + pop.getBestScore());
         bestScore = pop.getBestScore();
       }
       generation++;
