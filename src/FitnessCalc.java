@@ -99,7 +99,7 @@ public class FitnessCalc {
     return getCount(gridCount);
   }
 
-  private static int getCount(HashMap<Integer, Integer> countMap) {
+  public static int getCount(HashMap<Integer, Integer> countMap) {
     int count = 0;
     for (int value : countMap.values()) {
       if (value == 1) {
