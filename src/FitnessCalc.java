@@ -7,24 +7,24 @@ public class FitnessCalc {
   public static int calculateFitness(Board board) {
     int[][] boardArr = board.getBoard();
 
-    int totalRowFitness = getTotalRowFiteness(boardArr);
-    int totalColFitness = getTotalColumnFiteness(boardArr);
+    int totalRowFitness = getTotalRowFitness(boardArr);
+    int totalColFitness = getTotalColumnFitness(boardArr);
     int totalGridFitness = getTotalGridFitness(boardArr);
     return totalRowFitness + totalColFitness + totalGridFitness;
   }
 
-  private static int getTotalRowFiteness(int[][] boardArr) {
+  private static int getTotalRowFitness(int[][] boardArr) {
     int total = 0;
     for (int i = 0; i < boardArr.length; i++) {
-      total += getRowFiteness(boardArr, i);
+      total += getRowFitness(boardArr, i);
     }
     return total;
   }
 
-  private static int getTotalColumnFiteness(int[][] boardArr) {
+  private static int getTotalColumnFitness(int[][] boardArr) {
     int total = 0;
     for (int i = 0; i < boardArr.length; i++) {
-      total += getColumnFiteness(boardArr, i);
+      total += getColumnFitness(boardArr, i);
     }
     return total;
   }
@@ -32,12 +32,12 @@ public class FitnessCalc {
   private static int getTotalGridFitness(int[][] boardArr) {
     int total = 0;
     for (int i = 0; i < boardArr.length; i++) {
-      total += getGridFiteness(boardArr, i);
+      total += getGridFitness(boardArr, i);
     }
     return total;
   }
 
-  private static int getRowFiteness(int[][] board, int row) {
+  private static int getRowFitness(int[][] board, int row) {
     HashMap<Integer, Integer> rowCount = new HashMap<>();
     for (int col = 0; col < board.length; col++) {
       if (rowCount.get(board[row][col]) == null) {
@@ -49,7 +49,7 @@ public class FitnessCalc {
     return getCount(rowCount);
   }
 
-  private static int getColumnFiteness(int[][] board, int col) {
+  private static int getColumnFitness(int[][] board, int col) {
     HashMap<Integer, Integer> colCount = new HashMap<>();
 
     for (int row = 0; row < board.length; row++) {
@@ -62,7 +62,7 @@ public class FitnessCalc {
     return getCount(colCount);
   }
 
-  private static int getGridFiteness(int[][] board, int grid) {
+  private static int getGridFitness(int[][] board, int grid) {
     HashMap<Integer, Integer> gridCount = new HashMap<>();
     int start = (grid % 3) * 3;
     if (grid <= 2) {
