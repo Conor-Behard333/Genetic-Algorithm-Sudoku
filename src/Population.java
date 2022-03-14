@@ -35,7 +35,6 @@ public class Population {
      * This is random Selection
      */
     public void selectParents() {
-
         int popSize = individuals.length;
         int remove = (int) (popSize * ((double) KILL_PERCENTAGE));
 
@@ -60,7 +59,7 @@ public class Population {
     }
 
     private void kill(int popSize, int remove) {
-        for (int i = individuals.length - 1; i >= individuals.length - remove; i--) {
+        for (int i = individuals.length - 1 - 400; i >= individuals.length - remove; i--) {
             individuals[i] = null;
         }
     }

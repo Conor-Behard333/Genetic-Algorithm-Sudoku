@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Board {
+public class Chromosome {
 
   private ArrayList<Integer> allowedToChange = new ArrayList<>();
   private int[] startingBoard;
   private int[] chromosome;
 
-  Board(int[][] startingBoard, boolean child) {
+  Chromosome(int[][] startingBoard, boolean child) {
     this.startingBoard = flatten(startingBoard);
 
     //copy starting board into board

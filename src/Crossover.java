@@ -35,17 +35,6 @@ public class Crossover {
         }
         return childChromosome;
     }
-
-    public String toString(int[] arr) {
-      StringBuilder result = new StringBuilder();
-      for (int i = 0; i < arr.length; i++) {
-          result.append(arr[i] + ", ");
-          if ((i + 1) % 9 == 0) {
-              result.append("\n");
-          }
-      }
-      return result.toString();
-  }
     
     protected static int[] crossoverRow(Individual child, int[] p1Chromosome, int[] p2Chromosome, boolean p1) {
         int[] crossoverPoints = new int[] { 8, 17, 26, 35, 44, 53, 62, 71 };

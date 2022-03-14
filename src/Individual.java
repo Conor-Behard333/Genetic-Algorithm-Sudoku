@@ -1,9 +1,9 @@
 public class Individual {
   private int fitnessScore;
-  private Board board;
+  private Chromosome board;
 
   Individual(int[][] startingBoard, boolean child) {
-    board = new Board(startingBoard, child);
+    board = new Chromosome(startingBoard, child);
     setFitness();
   }
 
@@ -21,7 +21,7 @@ public class Individual {
   /**
    * @return the board
    */
-  public Board getBoard() {
+  public Chromosome getBoard() {
     return board;
   }
 

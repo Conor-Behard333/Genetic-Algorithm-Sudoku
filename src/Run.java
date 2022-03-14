@@ -38,7 +38,7 @@ class Run {
     };
 
     //solve starting board 1 (10000, 0.85, 20, 7)
-    run(10000, startingBoard1, 0.98, 90, 50000); //solves starting board 1
+    run(10000, startingBoard1, 0.98, 80, 500); //solves starting board 1
 
     // for (int i = 0; i < 5; i++) {
     //   run(10, startingBoard, 0.85, 100, 7);
@@ -71,6 +71,7 @@ class Run {
       if (bestScore != pop.getBestScore()) {
         System.out.println("GEN: " + pop.getGeneration() + " Best Score: " + pop.getBestScore());
         bestScore = pop.getBestScore();
+        // pop.displayWorst();
       }
       
     }

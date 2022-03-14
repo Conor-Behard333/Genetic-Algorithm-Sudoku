@@ -4,7 +4,7 @@ public class FitnessCalc {
 
   FitnessCalc() {}
 
-  public static int calculateFitness(Board board) {
+  public static int calculateFitness(Chromosome board) {
     int[][] boardArr = board.getTwoDChromosome();
 
     int totalRowFitness = getTotalRowFitness(boardArr);
