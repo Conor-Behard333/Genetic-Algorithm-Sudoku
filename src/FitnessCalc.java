@@ -5,7 +5,7 @@ public class FitnessCalc {
   FitnessCalc() {}
 
   public static int calculateFitness(Board board) {
-    int[][] boardArr = board.getBoard();
+    int[][] boardArr = board.getTwoDChromosome();
 
     int totalRowFitness = getTotalRowFitness(boardArr);
     int totalColFitness = getTotalColumnFitness(boardArr);
