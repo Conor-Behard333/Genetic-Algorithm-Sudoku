@@ -100,12 +100,12 @@ public class Population {
             child5Chromosome = Crossover.crossoverGrid(child5, p1Chromosome, p2Chromosome, true);
             child6Chromosome = Crossover.crossoverGrid(child6, p1Chromosome, p2Chromosome, false);
 
-            mutate(child1Chromosome, MUTATION_PROB, child1);
-            mutate(child2Chromosome, MUTATION_PROB, child2);
-            mutate(child3Chromosome, MUTATION_PROB, child3);
-            mutate(child4Chromosome, MUTATION_PROB, child4);
-            mutate(child5Chromosome, MUTATION_PROB, child5);
-            mutate(child6Chromosome, MUTATION_PROB, child6);
+            mutate(child1Chromosome, MUTATION_PROB, child1, 1);
+            mutate(child2Chromosome, MUTATION_PROB, child2, 1);
+            mutate(child3Chromosome, MUTATION_PROB, child3, 1);
+            mutate(child4Chromosome, MUTATION_PROB, child4, 1);
+            mutate(child5Chromosome, MUTATION_PROB, child5, 1);
+            mutate(child6Chromosome, MUTATION_PROB, child6, 1);
 
             setChildGenes(child1, child1Chromosome);
             setChildGenes(child2, child2Chromosome);
@@ -117,15 +117,19 @@ public class Population {
             Individual[] children = { child1, child2, child3, child4, child5, child6 };
             Arrays.sort(children, Individual::compareFitnessScore);
 
+            boolean convergence = children[0].getFitnessScore() == children[5].getFitnessScore();
+
             while (children[0].getFitnessScore() == children[5].getFitnessScore()) {
-                mutate(child6Chromosome, 100, child6);
+                mutate(child6Chromosome, 100, child6, 10);
                 setChildGenes(child6, child6Chromosome);
             }
             
-
-            addChildToPop(children[0]);
-            addChildToPop(children[5]);
-
+            if (convergence) {
+                addChildToPop(children[5]);
+            } else {
+                addChildToPop(children[0]);
+                addChildToPop(children[5]);
+            }
         }
         sortIndividuals();
         Population.generation++;
@@ -156,14 +160,16 @@ public class Population {
     /**
      * Random Resetting:             
      */
-    private void mutate(int[] childGenes, int mutationProb, Individual child) {
+    private void mutate(int[] childGenes, int mutationProb, Individual child, int numOfMutations) {
         if (Rand.randomInt(99, 0) + 1 < mutationProb) {
-            int randPos = Rand.randomInt(childGenes.length, 0);
-            int randNum = Rand.randomInt(9, 1);
-            while (!child.getBoard().isAllowedToChange(randPos)) {
-                randPos = Rand.randomInt(childGenes.length, 0);
+            for (int i = 0; i < numOfMutations; i++) {
+                int randPos = Rand.randomInt(childGenes.length, 0);
+                int randNum = Rand.randomInt(9, 1);
+                while (!child.getBoard().isAllowedToChange(randPos)) {
+                    randPos = Rand.randomInt(childGenes.length, 0);
+                }
+                childGenes[randPos] = randNum;
             }
-            childGenes[randPos] = randNum;
         }
     }
 
