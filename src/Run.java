@@ -38,7 +38,7 @@ class Run {
     };
 
     //solve starting board 1 (10000, 0.85, 20, 7)
-    run(10000, startingBoard1, 0.85, 20, 7); //solves starting board 1
+    run(10000, startingBoard1, 0.98, 90, 50000); //solves starting board 1
 
     // for (int i = 0; i < 5; i++) {
     //   run(10, startingBoard, 0.85, 100, 7);
@@ -50,31 +50,37 @@ class Run {
     //   run(1000, startingBoard, 0.85, 100, 7);
     // }
     // for (int i = 0; i < 5; i++) {
-    //   run(1000, startingBoard, 0.85, 100, 7);    
+    //   run(10000, startingBoard, 0.85, 100, 7);    
     // }
   }
   
-  private static void run(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb, int numberOfCrossovers) {
+  private static void run(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb, int genTermination) {
+    
+    // Rand.setSeed(1152620185343846630L);
+    System.out.println(Rand.getSeed());
     // Creates a population with random candidate solutions
     // Also evaluates each candidate
     Population pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
     int bestScore = 0;
-    int generation = 0;
     // 243 is the score when a solution is found
-    while (pop.getBestScore() != 243) {
+    while (pop.getBestScore() != 243 && pop.getGeneration() != genTermination) {
       // SELECT parents 
       pop.selectParents();
       // CROSSOVER pairs of parents AND Mutate
-      pop.crossover(numberOfCrossovers);
+      pop.crossover();
       if (bestScore != pop.getBestScore()) {
-        System.out.println("GEN: " + generation +" Best Score: " + pop.getBestScore());
+        System.out.println("GEN: " + pop.getGeneration() + " Best Score: " + pop.getBestScore());
         bestScore = pop.getBestScore();
       }
-      generation++;
+      
     }
-
-    System.out.println("SOLUTION FOUND");
-    System.out.println(generation);
-    pop.displayBest();
+    if (pop.getGeneration() == genTermination) {
+      System.out.println("GENERATION LIMIT EXCEEDED");
+    } else {
+      System.out.println("SOLUTION FOUND");
+      System.out.println(pop.getGeneration());
+      pop.displayBest();
+    }
+    
   }
 }
