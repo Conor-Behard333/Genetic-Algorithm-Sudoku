@@ -44,7 +44,7 @@ public class Population {
         // currently picks best parents
         int count = 0;
         for (int i = 0; i < individuals.length; i++) {
-            if (count < popSize * 0.6 ) {
+            if (count < popSize * 0.01 ) {
                 if (individuals[i] != null) {
                     parents.add(individuals[i]);
                     count++;
@@ -59,7 +59,7 @@ public class Population {
     }
 
     private void kill(int popSize, int remove) {
-        for (int i = individuals.length - 1 - 400; i >= individuals.length - remove; i--) {
+        for (int i = individuals.length - 1; i >= individuals.length - remove; i--) {
             individuals[i] = null;
         }
     }
@@ -106,7 +106,6 @@ public class Population {
             mutate(child4Chromosome, MUTATION_PROB, child4);
             mutate(child5Chromosome, MUTATION_PROB, child5);
             mutate(child6Chromosome, MUTATION_PROB, child6);
-            
 
             setChildGenes(child1, child1Chromosome);
             setChildGenes(child2, child2Chromosome);
@@ -117,8 +116,16 @@ public class Population {
 
             Individual[] children = { child1, child2, child3, child4, child5, child6 };
             Arrays.sort(children, Individual::compareFitnessScore);
+
+            while (children[0].getFitnessScore() == children[5].getFitnessScore()) {
+                mutate(child6Chromosome, 100, child6);
+                setChildGenes(child6, child6Chromosome);
+            }
+            
+
             addChildToPop(children[0]);
-            addChildToPop(children[3]);
+            addChildToPop(children[5]);
+
         }
         sortIndividuals();
         Population.generation++;
