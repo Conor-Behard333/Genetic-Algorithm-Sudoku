@@ -1,6 +1,8 @@
 # Genetic-Algorithm-Sudoku
  
 ## TODO:
-    - initialize individual with unique numbers for each row rather than completely random
-    - crossover rows, cols and grids
-    - mutate (swap two numbers in the same row)
+    - mutate (swap random row)
+    - crossover:
+        - pick random row and swap
+        - goes to random row and crossover from bottom
+        - 0 or 1 of 1 switch if 0 don't

@@ -2,8 +2,6 @@ import java.util.HashMap;
 
 public class FitnessCalc {
 
-  FitnessCalc() {}
-
   public static int calculateFitness(Chromosome board) {
     int[][] boardArr = board.getTwoDChromosome();
 

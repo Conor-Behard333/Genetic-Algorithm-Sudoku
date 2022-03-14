@@ -81,49 +81,21 @@ public class Population {
 
             Individual child1 = new Individual(startingBoard, true);
             Individual child2 = new Individual(startingBoard, true);
-            Individual child3 = new Individual(startingBoard, true);
-            Individual child4 = new Individual(startingBoard, true);
-            Individual child5 = new Individual(startingBoard, true);
-            Individual child6 = new Individual(startingBoard, true);
 
             int[] child1Chromosome = null;
             int[] child2Chromosome = null;
-            int[] child3Chromosome = null;
-            int[] child4Chromosome = null;
-            int[] child5Chromosome = null;
-            int[] child6Chromosome = null;
 
-            child1Chromosome = Crossover.crossoverColumn(child1, p1Chromosome, p2Chromosome, true);
-            child2Chromosome = Crossover.crossoverColumn(child2, p1Chromosome, p2Chromosome, false);
-            child3Chromosome = Crossover.crossoverRow(child3, p1Chromosome, p2Chromosome, true);
-            child4Chromosome = Crossover.crossoverRow(child4, p1Chromosome, p2Chromosome, false);
-            child5Chromosome = Crossover.crossoverGrid(child5, p1Chromosome, p2Chromosome, true);
-            child6Chromosome = Crossover.crossoverGrid(child6, p1Chromosome, p2Chromosome, false);
+            child1Chromosome = Crossover.crossoverRow(child1, p1Chromosome, p2Chromosome, true);
+            child2Chromosome = Crossover.crossoverRow(child2, p1Chromosome, p2Chromosome, false);
 
             mutate(child1Chromosome, MUTATION_PROB, child1, 1);
             mutate(child2Chromosome, MUTATION_PROB, child2, 1);
-            mutate(child3Chromosome, MUTATION_PROB, child3, 1);
-            mutate(child4Chromosome, MUTATION_PROB, child4, 1);
-            mutate(child5Chromosome, MUTATION_PROB, child5, 1);
-            mutate(child6Chromosome, MUTATION_PROB, child6, 1);
 
             setChildGenes(child1, child1Chromosome);
             setChildGenes(child2, child2Chromosome);
-            setChildGenes(child3, child3Chromosome);
-            setChildGenes(child4, child4Chromosome);
-            setChildGenes(child5, child5Chromosome);
-            setChildGenes(child6, child6Chromosome);
 
-            Individual[] children = { child1, child2, child3, child4, child5, child6 };
-            Arrays.sort(children, Individual::compareFitnessScore);
-
-            while (children[0].getFitnessScore() == children[5].getFitnessScore()) {
-                mutate(children[5].getBoard().getChromosome(), 100, children[5], 2);
-                setChildGenes(children[5], children[5].getBoard().getChromosome());
-            }
-
-            addChildToPop(children[0]);
-            addChildToPop(children[5]);
+            addChildToPop(child1);
+            addChildToPop(child2);
         }
         sortIndividuals();
         Population.generation++;
@@ -150,20 +122,19 @@ public class Population {
         return -1;
     }
 
-
-    /**
-     * Random Resetting:             
-     */
     private void mutate(int[] childGenes, int mutationProb, Individual child, int numOfMutations) {
         if (Rand.randomInt(99, 0) + 1 < mutationProb) {
-            for (int i = 0; i < numOfMutations; i++) {
-                int randPos = Rand.randomInt(childGenes.length, 0);
-                int randNum = Rand.randomInt(9, 1);
-                while (!child.getBoard().isAllowedToChange(randPos)) {
-                    randPos = Rand.randomInt(childGenes.length, 0);
-                }
-                childGenes[randPos] = randNum;
+            int randRow = Rand.randomInt(8, 0) * 9;
+            int randIndex1 = Rand.randomInt(8, 0) + randRow;
+            int randIndex2 = Rand.randomInt(8, 0)+ randRow;
+            while (!child.getBoard().isAllowedToChange(randIndex1) || !child.getBoard().isAllowedToChange(randIndex2)) {
+                randIndex1 = Rand.randomInt(8, 0) + randRow;
+                randIndex2 = Rand.randomInt(8, 0) + randRow;
             }
+            
+            int temp = childGenes[randIndex1];
+            childGenes[randIndex1] = childGenes[randIndex2];
+            childGenes[randIndex2] = temp;
         }
     }
 
@@ -181,5 +152,13 @@ public class Population {
 
     public int getGeneration() {
         return generation;
+    }
+
+    public void resetGeneration() {
+        generation = 0;
+    }
+
+    public int getWorstScore() {
+        return individuals[individuals.length - 1].getFitnessScore();
     }
 }
