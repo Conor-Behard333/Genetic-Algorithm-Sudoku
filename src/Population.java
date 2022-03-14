@@ -70,14 +70,14 @@ public class Population {
      */
     public void crossover() {
         while (getNullIndex() != -1) {
-            int index1 = Rand.randomInt(parents.size() - 1, 0);
-            int index2 = Rand.randomInt(parents.size() - 1, 0);
-            while (index1 == index2) {
-                index1 = Rand.randomInt(parents.size() - 1, 0);
+            int parent1Index = Rand.randomInt(parents.size() - 1, 0);
+            int parent2Index = Rand.randomInt(parents.size() - 1, 0);
+            while (parent1Index == parent2Index) {
+                parent1Index = Rand.randomInt(parents.size() - 1, 0);
             }
 
-            int[] p1Chromosome = parents.get(index1).getBoard().getChromosome();
-            int[] p2Chromosome = parents.get(index2).getBoard().getChromosome();
+            int[] p1Chromosome = parents.get(parent1Index).getBoard().getChromosome();
+            int[] p2Chromosome = parents.get(parent2Index).getBoard().getChromosome();
 
             Individual child1 = new Individual(startingBoard, true);
             Individual child2 = new Individual(startingBoard, true);
@@ -117,19 +117,13 @@ public class Population {
             Individual[] children = { child1, child2, child3, child4, child5, child6 };
             Arrays.sort(children, Individual::compareFitnessScore);
 
-            boolean convergence = children[0].getFitnessScore() == children[5].getFitnessScore();
-
             while (children[0].getFitnessScore() == children[5].getFitnessScore()) {
-                mutate(child6Chromosome, 100, child6, 10);
-                setChildGenes(child6, child6Chromosome);
+                mutate(children[5].getBoard().getChromosome(), 100, children[5], 2);
+                setChildGenes(children[5], children[5].getBoard().getChromosome());
             }
-            
-            if (convergence) {
-                addChildToPop(children[5]);
-            } else {
-                addChildToPop(children[0]);
-                addChildToPop(children[5]);
-            }
+
+            addChildToPop(children[0]);
+            addChildToPop(children[5]);
         }
         sortIndividuals();
         Population.generation++;
