@@ -8,9 +8,7 @@ public class Individual {
   }
 
   public void setFitness() {
-    board.create();
     fitnessScore = FitnessCalc.calculateFitness(board);
-    board.reset();
   }
 
   /**
