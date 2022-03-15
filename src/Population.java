@@ -44,7 +44,7 @@ public class Population {
         // currently picks best parents
         int count = 0;
         for (int i = 0; i < individuals.length; i++) {
-            if (count < popSize * 0.01 ) {
+            if (count < popSize * 0.001) {
                 if (individuals[i] != null) {
                     parents.add(individuals[i]);
                     count++;
@@ -53,7 +53,7 @@ public class Population {
                 if (individuals[i] != null) {
                     parents.add(individuals[i]);
                     individuals[i] = null;
-                }                
+                }
             }
         }
     }
@@ -66,7 +66,6 @@ public class Population {
 
     /**
      * row crossover
-     * https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
      */
     public void crossover() {
         while (getNullIndex() != -1) {
@@ -85,9 +84,18 @@ public class Population {
             int[] child1Chromosome = null;
             int[] child2Chromosome = null;
 
-            child1Chromosome = Crossover.crossoverRow(child1, p1Chromosome, p2Chromosome, true);
-            child2Chromosome = Crossover.crossoverRow(child2, p1Chromosome, p2Chromosome, false);
-
+            int randNum = Rand.randomInt(3, 1);
+            if (randNum == 1) {
+                child1Chromosome = Crossover.crossoverRandomRow(child1, p1Chromosome, p2Chromosome, true);
+                child2Chromosome = Crossover.crossoverRandomRow(child2, p1Chromosome, p2Chromosome, false);
+            } else if (randNum == 2) {
+                child1Chromosome = Crossover.crossoverRow3(child1, p1Chromosome, p2Chromosome, true);
+                child2Chromosome = Crossover.crossoverRow3(child2, p1Chromosome, p2Chromosome, false);
+            } else {
+                child1Chromosome = Crossover.crossoverMultipleRows(child1, p1Chromosome, p2Chromosome, true);
+                child2Chromosome = Crossover.crossoverMultipleRows(child2, p1Chromosome, p2Chromosome, false);
+            }
+            
             mutate(child1Chromosome, MUTATION_PROB, child1, 1);
             mutate(child2Chromosome, MUTATION_PROB, child2, 1);
 

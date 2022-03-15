@@ -37,8 +37,8 @@ class Run {
         { 0, 0, 6, 0, 0, 0, 0, 1, 0 }
     };
 
-    //solve starting board 1 (10000, 0.85, 20, 7)
-    run(10000, startingBoard1, 0.98, 95, 500); //solves starting board 1
+    // run(10000, startingBoard1, 0.95, 80, 100);// Solves 1
+       run(10000, startingBoard2, 0.98, 90, 300);// Solves 1
 
     // for (int i = 0; i < 5; i++) {
     //   run(10, startingBoard, 0.85, 100, 7);
@@ -56,13 +56,12 @@ class Run {
   
   private static void run(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb, int genTermination) {
     
-   // Rand.setSeed(1152620185343846630L);
     // Creates a population with random candidate solutions
     // Also evaluates each candidate
     Population pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
     int bestScore = 0;
     // 243 is the score when a solution is found
-    while (pop.getBestScore() != 243) {
+    while (true) {
       if (pop.getGeneration() == genTermination) {
         System.out.println();
         pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
@@ -71,17 +70,19 @@ class Run {
         Rand.newSeed();
         System.out.println(Rand.getSeed());
       }
+      System.out.println("GEN: " + pop.getGeneration() + ", Worst Score: " + pop.getWorstScore() + ", Best Score: "
+            + pop.getBestScore());
       // SELECT parents 
       pop.selectParents();
       // CROSSOVER pairs of parents AND Mutate
-      // pop.displayBest();
       pop.crossover();
       if (bestScore != pop.getBestScore()) {
-        System.out.println("GEN: " + pop.getGeneration() + ", Worst Score: " + pop.getWorstScore() + ", Best Score: "
-            + pop.getBestScore());
+        
         bestScore = pop.getBestScore();
       }
-      
+      if (pop.getBestScore() == 243) {
+        break;
+     }
     }
     if (pop.getGeneration() == genTermination) {
       System.out.println("GENERATION LIMIT EXCEEDED");
