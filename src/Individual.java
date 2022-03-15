@@ -1,14 +1,14 @@
 public class Individual {
   private int fitnessScore;
-  private Chromosome board;
+  private Chromosome chromosome;
 
   Individual(int[][] startingBoard, boolean child) {
-    board = new Chromosome(startingBoard, child);
+    chromosome = new Chromosome(startingBoard, child);
     setFitness();
   }
 
   public void setFitness() {
-    fitnessScore = FitnessCalc.calculateFitness(board);
+    fitnessScore = FitnessCalc.calculateFitness(chromosome);
   }
 
   /**
@@ -22,13 +22,13 @@ public class Individual {
    * @return the board
    */
   public Chromosome getBoard() {
-    return board;
+    return chromosome;
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append(board.toString());
+    sb.append(chromosome.toString());
     sb.append(fitnessScore + "\n");
     return sb.toString();
   }

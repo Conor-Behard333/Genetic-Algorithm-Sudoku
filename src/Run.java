@@ -37,21 +37,24 @@ class Run {
         { 0, 0, 6, 0, 0, 0, 0, 1, 0 }
     };
 
-    // run(10000, startingBoard1, 0.95, 80, 100);// Solves 1
-       run(10000, startingBoard2, 0.98, 90, 300);// Solves 1
+    run(10000, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(10000, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(10000, startingBoard3, 0.95, 80, 100); //Run 5 times
 
-    // for (int i = 0; i < 5; i++) {
-    //   run(10, startingBoard, 0.85, 100, 7);
-    // }
-    // for (int i = 0; i < 5; i++) {
-    //   run(100, startingBoard, 0.85, 100, 7);
-    // }
-    // for (int i = 0; i < 5; i++) {
-    //   run(1000, startingBoard, 0.85, 100, 7);
-    // }
-    // for (int i = 0; i < 5; i++) {
-    //   run(10000, startingBoard, 0.85, 100, 7);    
-    // }
+
+    run(1000, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(1000, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(1000, startingBoard3, 0.95, 80, 100); //Run 5 times
+
+
+    run(100, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(100, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(100, startingBoard3, 0.95, 80, 100); //Run 5 times
+
+
+    run(10, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(10, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(10, startingBoard3, 0.95, 80, 100); //Run 5 times
   }
   
   private static void run(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb, int genTermination) {
@@ -64,11 +67,13 @@ class Run {
     while (true) {
       if (pop.getGeneration() == genTermination) {
         System.out.println();
-        pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
-        bestScore = 0;
+        System.out.println("GENERATION LIMIT EXCEEDED");
         pop.resetGeneration();
         Rand.newSeed();
-        System.out.println(Rand.getSeed());
+        break;
+        // pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
+        // bestScore = 0;
+        // System.out.println(Rand.getSeed());
       }
       System.out.println("GEN: " + pop.getGeneration() + ", Worst Score: " + pop.getWorstScore() + ", Best Score: "
             + pop.getBestScore());
@@ -81,15 +86,11 @@ class Run {
         bestScore = pop.getBestScore();
       }
       if (pop.getBestScore() == 243) {
+        System.out.println("SOLUTION FOUND");
+        System.out.println(pop.getGeneration());
+        pop.displayBest();
         break;
-     }
-    }
-    if (pop.getGeneration() == genTermination) {
-      System.out.println("GENERATION LIMIT EXCEEDED");
-    } else {
-      System.out.println("SOLUTION FOUND");
-      System.out.println(pop.getGeneration());
-      pop.displayBest();
+      }
     }
   }
 }
