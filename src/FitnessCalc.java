@@ -44,7 +44,7 @@ public class FitnessCalc {
         rowCount.put(board[row][col], rowCount.get(board[row][col]) + 1);
       }
     }
-    return getCount(rowCount);
+    return rowCount.size();
   }
 
   private static int getColumnFitness(int[][] board, int col) {
@@ -57,7 +57,7 @@ public class FitnessCalc {
         colCount.put(board[row][col], colCount.get(board[row][col]) + 1);
       }
     }
-    return getCount(colCount);
+    return colCount.size();
   }
 
   private static int getGridFitness(int[][] board, int grid) {
@@ -94,16 +94,6 @@ public class FitnessCalc {
         }
       }
     }
-    return getCount(gridCount);
-  }
-
-  private static int getCount(HashMap<Integer, Integer> countMap) {
-    int count = 0;
-    for (int value : countMap.values()) {
-      if (value == 1) {
-        count++;
-      }
-    }
-    return count;
+    return gridCount.size();
   }
 }
