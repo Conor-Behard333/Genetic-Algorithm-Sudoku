@@ -57,7 +57,6 @@ class Run {
   private static void run(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb, int genTermination) {
     
    // Rand.setSeed(1152620185343846630L);
-    System.out.println(Rand.getSeed());
     // Creates a population with random candidate solutions
     // Also evaluates each candidate
     Population pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
@@ -65,10 +64,12 @@ class Run {
     // 243 is the score when a solution is found
     while (pop.getBestScore() != 243) {
       if (pop.getGeneration() == genTermination) {
+        System.out.println();
         pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
         bestScore = 0;
         pop.resetGeneration();
         Rand.newSeed();
+        System.out.println(Rand.getSeed());
       }
       // SELECT parents 
       pop.selectParents();
@@ -79,9 +80,8 @@ class Run {
         System.out.println("GEN: " + pop.getGeneration() + ", Worst Score: " + pop.getWorstScore() + ", Best Score: "
             + pop.getBestScore());
         bestScore = pop.getBestScore();
-        
       }
-
+      
     }
     if (pop.getGeneration() == genTermination) {
       System.out.println("GENERATION LIMIT EXCEEDED");

@@ -1,6 +1,9 @@
 public class Crossover {
 
-    
+    protected static int[] crossoverRow2(Individual child, int[] p1Chromosome, int[] p2Chromosome, boolean p1) {
+        
+        return null;
+    }
     
     protected static int[] crossoverRow(Individual child, int[] p1Chromosome, int[] p2Chromosome, boolean p1) {
         int[] crossoverPoints = new int[] { 8, 17, 26, 35, 44, 53, 62, 71 };
