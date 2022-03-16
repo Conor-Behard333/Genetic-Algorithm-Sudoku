@@ -130,6 +130,7 @@ public class Population {
         return -1;
     }
 
+
     private void mutate(int[] childGenes, int mutationProb, Individual child, int numOfMutations) {
         if (Rand.randomInt(99, 0) + 1 < mutationProb) {
             int randRow = Rand.randomInt(8, 0) * 9;
@@ -143,6 +144,7 @@ public class Population {
             int temp = childGenes[randIndex1];
             childGenes[randIndex1] = childGenes[randIndex2];
             childGenes[randIndex2] = temp;
+
         }
     }
 
