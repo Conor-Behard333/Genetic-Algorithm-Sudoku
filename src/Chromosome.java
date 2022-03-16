@@ -102,9 +102,5 @@ public class Chromosome {
   public boolean isAllowedToChange(int index) {
     return allowedToChange.contains(index);
   }
-
-  // public void reset() {
-    // chromosome = Arrays.stream(startingBoard).map(a -> Arrays.copyOf(a, a.length)).toArray(int[][]::new);
-  // }
   
 }

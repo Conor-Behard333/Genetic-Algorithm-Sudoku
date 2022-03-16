@@ -169,4 +169,8 @@ public class Population {
     public int getWorstScore() {
         return individuals[individuals.length - 1].getFitnessScore();
     }
+
+    public Individual getBestIndividual() {
+        return individuals[0];
+    }
 }

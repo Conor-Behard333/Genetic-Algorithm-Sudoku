@@ -29,7 +29,6 @@ public class Individual {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(chromosome.toString());
-    sb.append(fitnessScore + "\n");
     return sb.toString();
   }
 
