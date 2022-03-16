@@ -2,11 +2,20 @@ public class Individual {
   private int fitnessScore;
   private Chromosome chromosome;
 
+  /**
+   * Constructor to initialize the individual
+   * 
+   * @param startingBoard: The starting board
+   * @param child: True if a child is being initialized, false if not
+   */
   Individual(int[][] startingBoard, boolean child) {
     chromosome = new Chromosome(startingBoard, child);
     setFitness();
   }
 
+  /**
+   * Sets the fitness score for the individual 
+   */
   public void setFitness() {
     fitnessScore = FitnessCalc.calculateFitness(chromosome);
   }
@@ -19,9 +28,9 @@ public class Individual {
   }
 
   /**
-   * @return the board
+   * @return the chromosome
    */
-  public Chromosome getBoard() {
+  public Chromosome getChromosome() {
     return chromosome;
   }
 
@@ -29,10 +38,15 @@ public class Individual {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(chromosome.toString());
-    sb.append(fitnessScore + "\n");
     return sb.toString();
   }
 
+  /**
+   * Comparison function to allow individuals to be sorted by their fitness score
+   * @param a: individual a
+   * @param b: individual b
+   * 
+   */
   public static int compareFitnessScore(Individual a, Individual b) {
     if (a == null || b == null) {
       return 1;
