@@ -37,44 +37,60 @@ class Run {
         { 0, 0, 6, 0, 0, 0, 0, 1, 0 }
     };
 
-    //solve starting board 1 (10000, 0.85, 20, 7)
-    run(10000, startingBoard1, 0.85, 20, 7); //solves starting board 1
+    run(10000, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(10000, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(10000, startingBoard3, 0.95, 80, 100); //Run 5 times
 
-    // for (int i = 0; i < 5; i++) {
-    //   run(10, startingBoard, 0.85, 100, 7);
-    // }
-    // for (int i = 0; i < 5; i++) {
-    //   run(100, startingBoard, 0.85, 100, 7);
-    // }
-    // for (int i = 0; i < 5; i++) {
-    //   run(1000, startingBoard, 0.85, 100, 7);
-    // }
-    // for (int i = 0; i < 5; i++) {
-    //   run(1000, startingBoard, 0.85, 100, 7);    
-    // }
+
+    run(1000, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(1000, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(1000, startingBoard3, 0.95, 80, 100); //Run 5 times
+
+
+    run(100, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(100, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(100, startingBoard3, 0.95, 80, 100); //Run 5 times
+
+
+    run(10, startingBoard1, 0.95, 80, 100); //Run 5 times
+    run(10, startingBoard2, 0.95, 80, 100); //Run 5 times
+    run(10, startingBoard3, 0.95, 80, 100); //Run 5 times
   }
   
-  private static void run(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb, int numberOfCrossovers) {
+  private static void run(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb, int genTermination) {
+    
     // Creates a population with random candidate solutions
     // Also evaluates each candidate
     Population pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
     int bestScore = 0;
-    int generation = 0;
     // 243 is the score when a solution is found
-    while (pop.getBestScore() != 243) {
+    while (true) {
+      if (pop.getGeneration() == genTermination) {
+        System.out.println();
+        System.out.println("GENERATION LIMIT EXCEEDED");
+        pop.resetGeneration();
+        Rand.newSeed();
+        break;
+        // pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
+        // bestScore = 0;
+        // System.out.println(Rand.getSeed());
+      }
+      System.out.println("GEN: " + pop.getGeneration() + ", Worst Score: " + pop.getWorstScore() + ", Best Score: "
+            + pop.getBestScore());
       // SELECT parents 
       pop.selectParents();
       // CROSSOVER pairs of parents AND Mutate
-      pop.crossover(numberOfCrossovers);
+      pop.crossover();
       if (bestScore != pop.getBestScore()) {
-        System.out.println("GEN: " + generation +" Best Score: " + pop.getBestScore());
+        
         bestScore = pop.getBestScore();
       }
-      generation++;
+      if (pop.getBestScore() == 243) {
+        System.out.println("SOLUTION FOUND");
+        System.out.println(pop.getGeneration());
+        pop.displayBest();
+        break;
+      }
     }
-
-    System.out.println("SOLUTION FOUND");
-    System.out.println(generation);
-    pop.displayBest();
   }
 }

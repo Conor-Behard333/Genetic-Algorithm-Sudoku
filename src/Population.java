@@ -1,15 +1,14 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 public class Population {
+    private static int generation = 0;
     private Individual[] individuals;
     private int[][] startingBoard;
     private ArrayList<Individual> parents = new ArrayList<>();
 
     private final double KILL_PERCENTAGE;
     private final int MUTATION_PROB;
-    private final double OFFSET_PERCENTAGE = 0.1;
 
     Population(int size, int[][] startingBoard, double killPercentage, int mutateProb) {
         this.startingBoard = startingBoard;
@@ -33,127 +32,82 @@ public class Population {
     }
 
     /*
-     * Selection techniques:
-     * - Roulette Wheel Selection
-     * - Rank Selection
-     * - Steady State Selection 
-     * - Tournament Selection
-     * - Elitism Selection
-     * - Boltzmann Selection
-     * - https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
-     * 
-     * This is Rank Selection
+     * This is random Selection
      */
     public void selectParents() {
-        // Kill x percent of the population returns the number of individuals killed
-        int parentsNeeded = kill(); 
+        int popSize = individuals.length;
+        int remove = (int) (popSize * ((double) KILL_PERCENTAGE));
+
+        // Kill a part of the population
+        kill(popSize, remove);
 
         // currently picks best parents
-        for (int i = 0; i < parentsNeeded; i++) {
-            if (individuals[i] != null) {
-                parents.add(individuals[i]);                
+        int count = 0;
+        for (int i = 0; i < individuals.length; i++) {
+            if (count < popSize * 0.001) {
+                if (individuals[i] != null) {
+                    parents.add(individuals[i]);
+                    count++;
+                }
+            } else {
+                if (individuals[i] != null) {
+                    parents.add(individuals[i]);
+                    individuals[i] = null;
+                }
             }
         }
     }
 
-    private int kill() {
-        int popSize = individuals.length;
-        int offset = (int) (popSize * ((double) OFFSET_PERCENTAGE));
-        int remove = (int) (popSize * ((double) KILL_PERCENTAGE));
-        for (int i = individuals.length - 1 -offset; i >= individuals.length - remove; i--) {
+    private void kill(int popSize, int remove) {
+        for (int i = individuals.length - 1; i >= individuals.length - remove; i--) {
             individuals[i] = null;
         }
-        return remove;
     }
 
     /**
-     * K-point crossover:
-     * https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
+     * row crossover
      */
-    public void crossover(int k) {
-        Random rand = new Random();
+    public void crossover() {
         while (getNullIndex() != -1) {
-            int index1 = rand.nextInt(parents.size());
-            int index2 = rand.nextInt(parents.size());
-            int[] p1Gene = parents.get(index1).getBoard().getGene();
-            int[] p2Gene = parents.get(index2).getBoard().getGene();
-            int[] crossoverPoints = getCrossoverPoints(k, p1Gene.length);
+            int parent1Index = Rand.randomInt(parents.size() - 1, 0);
+            int parent2Index = Rand.randomInt(parents.size() - 1, 0);
+            while (parent1Index == parent2Index) {
+                parent1Index = Rand.randomInt(parents.size() - 1, 0);
+            }
+
+            int[] p1Chromosome = parents.get(parent1Index).getBoard().getChromosome();
+            int[] p2Chromosome = parents.get(parent2Index).getBoard().getChromosome();
 
             Individual child1 = new Individual(startingBoard, true);
             Individual child2 = new Individual(startingBoard, true);
 
-            int[] child1Gene = getChildGenes(child1, crossoverPoints, p1Gene, p2Gene, true);
-            int[] child2Gene = getChildGenes(child2, crossoverPoints, p1Gene, p2Gene, false);
+            int[] child1Chromosome = null;
+            int[] child2Chromosome = null;
 
-            mutate(child1Gene, MUTATION_PROB);
-            mutate(child1Gene, MUTATION_PROB);
+            int randNum = Rand.randomInt(3, 1);
+            if (randNum == 1) {
+                child1Chromosome = Crossover.crossoverRandomRow(child1, p1Chromosome, p2Chromosome, true);
+                child2Chromosome = Crossover.crossoverRandomRow(child2, p1Chromosome, p2Chromosome, false);
+            } else if (randNum == 2) {
+                child1Chromosome = Crossover.crossoverRow3(child1, p1Chromosome, p2Chromosome, true);
+                child2Chromosome = Crossover.crossoverRow3(child2, p1Chromosome, p2Chromosome, false);
+            } else {
+                child1Chromosome = Crossover.crossoverMultipleRows(child1, p1Chromosome, p2Chromosome, true);
+                child2Chromosome = Crossover.crossoverMultipleRows(child2, p1Chromosome, p2Chromosome, false);
+            }
+            
+            mutate(child1Chromosome, MUTATION_PROB, child1, 1);
+            mutate(child2Chromosome, MUTATION_PROB, child2, 1);
 
-            setChildGenes(child1, child1Gene);
-            setChildGenes(child2, child2Gene);
+            setChildGenes(child1, child1Chromosome);
+            setChildGenes(child2, child2Chromosome);
 
             addChildToPop(child1);
             addChildToPop(child2);
         }
         sortIndividuals();
+        Population.generation++;
     }
-    
-    private int[] getChildGenes(Individual child, int[] crossoverPoint, int[] p1Gene, int[] p2Gene, boolean p1) {
-        int[] childGene = child.getBoard().getGene();
-        for (int i = 0; i < crossoverPoint.length; i++) {
-            if (i == 0) {
-                for (int j = 0; j < crossoverPoint[i] + 1; j++) {
-                    if (p1) {
-                        childGene[j] = p1Gene[j];
-                    } else {
-                        childGene[j] = p2Gene[j];
-                    }
-                }
-                p1 = !p1;
-            } else {
-                for (int j = crossoverPoint[i - 1]; j < crossoverPoint[i]; j++) {
-                    if (p1) {
-                        childGene[j] = p2Gene[j];                        
-                    } else {
-                        childGene[j] = p1Gene[j];
-                    }
-                }
-            }
-            p1 = !p1;
-        }
-        for (int i = crossoverPoint[crossoverPoint.length - 1]; i < childGene.length; i++) {
-            if (!p1) {
-                childGene[i] = p1Gene[i];
-            } else {
-                childGene[i] = p2Gene[i];
-            }
-        }
-        return childGene;
-    }
-
-    private int[] getCrossoverPoints(int k, int geneLength) {
-        Random rand = new Random();
-        int[] crossoverPoints = new int[k];
-        for (int i = 0; i < crossoverPoints.length; i++) {
-            int randNum = rand.nextInt((geneLength - 2) + 1) + 1;
-            if (contains(crossoverPoints, randNum)) {
-                i--;
-                continue;
-            }
-            crossoverPoints[i] = rand.nextInt((geneLength - 2) + 1) + 1;
-        }
-        Arrays.sort(crossoverPoints);
-        return crossoverPoints;
-    }
-
-    private boolean contains(int[] crossoverPoints, int randNum) {
-        for (int i = 0; i < crossoverPoints.length; i++) {
-            if (crossoverPoints[i] == randNum) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     
     private void addChildToPop(Individual child) {
         int nullIndex = getNullIndex();
@@ -163,7 +117,7 @@ public class Population {
     }
 
     private void setChildGenes(Individual child, int[] childGene) {
-        child.getBoard().setGene(childGene);
+        child.getBoard().setChromosome(childGene);
         child.setFitness();
     }
 
@@ -176,16 +130,21 @@ public class Population {
         return -1;
     }
 
-    /**
-     * Random Resetting:             
-     */
-    private void mutate(int[] childGenes, int mutationProb) {
-        Random rand = new Random();
-        if (rand.nextInt(99) + 1 < mutationProb) {
-            // int randNumOfMutations = rand.nextInt((40 - 1) + 1) + 10;
-            int randPos = rand.nextInt(childGenes.length);
-            int randNum = rand.nextInt((9 - 1) + 1) + 1;
-            childGenes[randPos] = randNum;
+
+    private void mutate(int[] childGenes, int mutationProb, Individual child, int numOfMutations) {
+        if (Rand.randomInt(99, 0) + 1 < mutationProb) {
+            int randRow = Rand.randomInt(8, 0) * 9;
+            int randIndex1 = Rand.randomInt(8, 0) + randRow;
+            int randIndex2 = Rand.randomInt(8, 0)+ randRow;
+            while (!child.getBoard().isAllowedToChange(randIndex1) || !child.getBoard().isAllowedToChange(randIndex2)) {
+                randIndex1 = Rand.randomInt(8, 0) + randRow;
+                randIndex2 = Rand.randomInt(8, 0) + randRow;
+            }
+            
+            int temp = childGenes[randIndex1];
+            childGenes[randIndex1] = childGenes[randIndex2];
+            childGenes[randIndex2] = temp;
+
         }
     }
 
@@ -193,7 +152,23 @@ public class Population {
         System.out.println(individuals[0]);
     }
 
+    public void displayWorst() {
+        System.out.println(individuals[individuals.length - 1]);
+    }
+
     public int getBestScore() {
         return individuals[0].getFitnessScore();
+    }
+
+    public int getGeneration() {
+        return generation;
+    }
+
+    public void resetGeneration() {
+        generation = 0;
+    }
+
+    public int getWorstScore() {
+        return individuals[individuals.length - 1].getFitnessScore();
     }
 }
