@@ -31,7 +31,6 @@ public class Population {
         sortIndividuals();
     }
 
-    
     /**
      * Sorts the individuals by their fitness score
      */
@@ -85,55 +84,93 @@ public class Population {
     }
 
     /**
-     * row crossover
+     * Applies crossover to the parents to obtain two children and mutates the children 
      */
-    public void crossover() {
+    public void crossoverAndMutate() {
         while (getNullIndex() != -1) {
-            int parent1Index = Rand.randomInt(parents.size() - 1, 0);
-            int parent2Index = Rand.randomInt(parents.size() - 1, 0);
-            while (parent1Index == parent2Index) {
-                parent1Index = Rand.randomInt(parents.size() - 1, 0);
-            }
-            // int[][] parentsChromosomes = { parents.get(parent1Index).getChromosome().getChromosomeAsArray(),
-            //                     parents.get(parent2Index).getChromosome().getChromosomeAsArray()
-            // };
-            int[] p1Chromosome = parents.get(parent1Index).getChromosome().getChromosomeAsArray();
-            int[] p2Chromosome = parents.get(parent2Index).getChromosome().getChromosomeAsArray();
+            int[][] parentsChromosomes = getParents();
 
-            Individual child1 = new Individual(startingBoard, true);
-            Individual child2 = new Individual(startingBoard, true);
+            // Create children
+            Individual[] children = { new Individual(startingBoard, true), new Individual(startingBoard, true) };
+            int[][] childrenChromosomes = { null, null };
 
-            int[] child1Chromosome = null;
-            int[] child2Chromosome = null;
+            crossover(parentsChromosomes, children, childrenChromosomes);
 
-            int randNum = Rand.randomInt(3, 1);
-            if (randNum == 1) {
-                child1Chromosome = Crossover.crossoverRandomRow(child1, p1Chromosome, p2Chromosome, true);
-                child2Chromosome = Crossover.crossoverRandomRow(child2, p1Chromosome, p2Chromosome, false);
-            } else if (randNum == 2) {
-                child1Chromosome = Crossover.crossoverRowChunks(child1, p1Chromosome, p2Chromosome, true);
-                child2Chromosome = Crossover.crossoverRowChunks(child2, p1Chromosome, p2Chromosome, false);
-            } else {
-                child1Chromosome = Crossover.crossoverMultipleRows(child1, p1Chromosome, p2Chromosome, true);
-                child2Chromosome = Crossover.crossoverMultipleRows(child2, p1Chromosome, p2Chromosome, false);
-            }
+            mutateAndAddToPopulation(children, childrenChromosomes);
 
-            mutate(child1Chromosome, MUTATION_PROB, child1, 1);
-            mutate(child2Chromosome, MUTATION_PROB, child2, 1);
-
-            setChildGenes(child1, child1Chromosome);
-            setChildGenes(child2, child2Chromosome);
-
-            addChildToPop(child1);
-            addChildToPop(child2);
         }
         sortIndividuals();
         Population.generation++;
     }
 
     /**
+     * Mutate the children then add them to the population
      * 
-     * @param child
+     * @param children: The children to be mutated/added
+     * @param childrenChromosomes: The chromosomes that belong to the children
+     */
+    private void mutateAndAddToPopulation(Individual[] children, int[][] childrenChromosomes) {
+        for (int i = 0; i < childrenChromosomes.length; i++) {
+            mutate(childrenChromosomes[i], MUTATION_PROB, children[i]);
+            setChildChromosomes(children[i], childrenChromosomes[i]);
+            addChildToPop(children[i]);
+        }
+    }
+
+    /**
+     * Gets the parents that will create two children
+     * Ensures that the same parent is picked twice
+     * 
+     * @return the parents
+     */
+    private int[][] getParents() {
+        int parent1Index = Rand.randomInt(parents.size() - 1, 0);
+        int parent2Index = Rand.randomInt(parents.size() - 1, 0);
+        while (parent1Index == parent2Index) {
+            parent1Index = Rand.randomInt(parents.size() - 1, 0);
+        }
+        int[][] parentsChromosomes = { parents.get(parent1Index).getChromosome().getChromosomeAsArray(),
+                parents.get(parent2Index).getChromosome().getChromosomeAsArray()
+        };
+        return parentsChromosomes;
+    }
+
+    /**
+     * Performs the crossover operations on the parents to obtain the children
+     * Randomly performs either of three crossovers to the parents 
+     * 
+     * @param parentsChromosomes: The parent's chromosomes
+     * @param children: The Children
+     * @param childrenChromosomes: The Children's chromosomes 
+     */
+    private void crossover(int[][] parentsChromosomes, Individual[] children, int[][] childrenChromosomes) {
+        boolean p1 = true;
+        int randNum = Rand.randomInt(3, 1);
+        if (randNum == 1) {
+            for (int i = 0; i < childrenChromosomes.length; i++) {
+                childrenChromosomes[i] = Crossover.crossoverRandomRow(children[i], parentsChromosomes[0],
+                        parentsChromosomes[1], p1);
+                p1 = !p1;
+            }
+        } else if (randNum == 2) {
+            for (int i = 0; i < childrenChromosomes.length; i++) {
+                childrenChromosomes[i] = Crossover.crossoverRowChunks(children[i], parentsChromosomes[0],
+                        parentsChromosomes[1], p1);
+                p1 = !p1;
+            }
+        } else {
+            for (int i = 0; i < childrenChromosomes.length; i++) {
+                childrenChromosomes[i] = Crossover.crossoverMultipleRows(children[i], parentsChromosomes[0],
+                        parentsChromosomes[1], p1);
+                p1 = !p1;
+            }
+        }
+    }
+
+    /**
+     * Adds a child to the population 
+     * 
+     * @param child to be added to the population
      */
     private void addChildToPop(Individual child) {
         int nullIndex = getNullIndex();
@@ -143,18 +180,18 @@ public class Population {
     }
 
     /**
+     * Sets the chromosome for a child
      * 
-     * @param child
-     * @param childGene
+     * @param child The child
+     * @param childChromosome The chromosome
      */
-    private void setChildGenes(Individual child, int[] childGene) {
-        child.getChromosome().setChromosome(childGene);
+    private void setChildChromosomes(Individual child, int[] childChromosome) {
+        child.getChromosome().setChromosome(childChromosome);
         child.setFitness();
     }
 
     /**
-     * 
-     * @return
+     * @return The index of an individual with a null value
      */
     private int getNullIndex() {
         for (int i = 0; i < individuals.length; i++) {
@@ -166,17 +203,23 @@ public class Population {
     }
 
     /**
+     * Chance to mutate a child
+     * Mutation consists of a single swap of two numbers on a random row
      * 
-     * @param childGenes
-     * @param mutationProb
-     * @param child
-     * @param numOfMutations
+     * @param childGenes: the genes for the child
+     * @param mutationProb: the probability that mutation occurs
+     * @param child: the child being mutated
      */
-    private void mutate(int[] childGenes, int mutationProb, Individual child, int numOfMutations) {
+    private void mutate(int[] childGenes, int mutationProb, Individual child) {
         if (Rand.randomInt(99, 0) + 1 < mutationProb) {
             int randRow = Rand.randomInt(8, 0) * 9;
             int randIndex1 = Rand.randomInt(8, 0) + randRow;
             int randIndex2 = Rand.randomInt(8, 0) + randRow;
+
+            /*
+             Ensure that the genes being swapped are allowed to be
+             keep generating them until they can be swapped
+            */ 
             while (!child.getChromosome().isAllowedToChange(randIndex1)
                     || !child.getChromosome().isAllowedToChange(randIndex2)) {
                 randIndex1 = Rand.randomInt(8, 0) + randRow;
@@ -191,53 +234,35 @@ public class Population {
     }
 
     /**
-     * 
-     */
-    public void displayBest() {
-        System.out.println(individuals[0]);
-    }
-
-    /**
-     * 
-     */
-    public void displayWorst() {
-        System.out.println(individuals[individuals.length - 1]);
-    }
-
-    /**
-     * 
-     * @return
+     * @return the best fitness score
      */
     public int getBestScore() {
         return individuals[0].getFitnessScore();
     }
 
     /**
-     * 
-     * @return
+     * @return the current generation number
      */
     public int getGeneration() {
         return generation;
     }
 
     /**
-     * 
+     * Reset the generation number
      */
     public void resetGeneration() {
         generation = 0;
     }
 
     /**
-     * 
-     * @return
+     * @return the worst score
      */
     public int getWorstScore() {
         return individuals[individuals.length - 1].getFitnessScore();
     }
 
     /**
-     * 
-     * @return
+     * @return the best individual
      */
     public Individual getBestIndividual() {
         return individuals[0];
