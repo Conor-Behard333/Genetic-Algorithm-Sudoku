@@ -58,21 +58,17 @@ class Run {
     int bestScore = 0;
     int run = 0;
     while (true) {
+      // Termination criteria 
       if (pop.getGeneration() == genTermination || pop.getBestScore() == 243) {
         run++;
-        Data runData = new Data();
-        Individual solution = null;  
-        if (pop.getBestScore() == 243) {
-          solution = pop.getBestIndividual();
-        }
-        runData.saveData(populationSize, startingBoard, killPercentage, mutateProb, genTermination, run,
-            pop.getGeneration() == genTermination, pop.getBestScore(), pop.getWorstScore(), pop.getGeneration(), solution);
-        System.out.println(runData);
+        outputRunData(populationSize, startingBoard, killPercentage, mutateProb, genTermination, pop, run);
+        
         // Reset entire population settings
         pop.resetGeneration();
         Rand.newSeed();
         pop = new Population(populationSize, startingBoard, killPercentage, mutateProb);
         bestScore = 0;
+        
         if (run == 5) {
           break;
         }
@@ -86,6 +82,18 @@ class Run {
         bestScore = pop.getBestScore();
       }
     }
+  }
+
+  private static void outputRunData(int populationSize, int[][] startingBoard, double killPercentage, int mutateProb,
+      int genTermination, Population pop, int run) {
+    Data runData = new Data();
+    Individual solution = null;  
+    if (pop.getBestScore() == 243) {
+      solution = pop.getBestIndividual();
+    }
+    runData.saveData(populationSize, startingBoard, killPercentage, mutateProb, genTermination, run,
+        pop.getGeneration() == genTermination, pop.getBestScore(), pop.getWorstScore(), pop.getGeneration(), solution);
+    System.out.println(runData);
   }
 
 }
