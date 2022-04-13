@@ -1,3 +1,3 @@
 # Genetic-Algorithm-Sudoku
  
-## TODO:
+## A genetic algorithm implemented to solve a sudoku puzzel
